@@ -10,6 +10,7 @@ from pathlib import Path
 DATA_PATH = Path("data/group_01/meditation_sessions.csv")
 MODEL_PATH = Path("model/model.pkl")
 
+
 def main():
     df = pd.read_csv(DATA_PATH)
     X = df[["duration_minutes", "mood_before"]]
@@ -32,6 +33,7 @@ def main():
     MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(pipe, MODEL_PATH)
     print("✅ Model trained and saved to", MODEL_PATH)
+
 
 if __name__ == "__main__":
     main()

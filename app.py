@@ -32,7 +32,13 @@ def get_sessions():
 def get_stats():
     """Return summary stats from dataset"""
     if df.empty:
-        return jsonify({"total_sessions": 0, "avg_duration": 0, "longest_session": 0, "shortest_session": 0})
+        return jsonify({
+            "total_sessions": 0,
+            "avg_duration": 0,
+            "longest_session": 0,
+            "shortest_session": 0,
+        })
+
     stats = {
         "total_sessions": int(len(df)),
         "avg_duration": round(float(df["duration_minutes"].mean()), 2),
