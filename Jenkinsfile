@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    DOCKERHUB_REPO = "roshi12/focus-meditation-agent"
+    DOCKERHUB_REPO = "bilalrazaswe/focus-meditation-agent"
   }
 
   stages {
