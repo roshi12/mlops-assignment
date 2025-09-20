@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    DOCKERHUB_REPO = "your-dockerhub-username/focus-meditation-agent"
+    DOCKERHUB_REPO = "bilalrazaswe/focus-meditation-agent"
   }
 
   stages {
@@ -42,14 +42,14 @@ pipeline {
                  Build: ${env.BUILD_URL}
                  Image: ${env.IMAGE_NAME}
               """,
-        to: "admin@example.com"
+        to: "roshi12@student.example.com"
       )
     }
     failure {
       emailext (
         subject: "Jenkins: Build #${env.BUILD_NUMBER} FAILED for ${env.JOB_NAME}",
         body: "Build failed. See ${env.BUILD_URL}",
-        to: "admin@example.com"
+        to: "roshi12@student.example.com"
       )
     }
   }
