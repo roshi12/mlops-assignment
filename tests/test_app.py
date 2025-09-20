@@ -34,3 +34,14 @@ def test_predict_valid_input():
     res = client().post("/predict", json={"duration_minutes": 15, "mood_before": "neutral"})
     # Either 200 (prediction ok) or 503 (model not loaded)
     assert res.status_code in (200, 503)
+
+
+def test_health_check():
+    """Test the new health check endpoint"""
+    res = client().get("/health")
+    assert res.status_code == 200
+    health = res.get_json()
+    assert "status" in health
+    assert "data_loaded" in health
+    assert "model_loaded" in health
+    assert health["status"] == "healthy"

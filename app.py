@@ -17,12 +17,23 @@ model = joblib.load(MODEL_PATH) if MODEL_PATH.exists() else None
 
 @app.route("/")
 def home():
+    """
+    Health check endpoint for the Focus Meditation Agent API.
+
+    Returns:
+        JSON response with status and message
+    """
     return jsonify({"status": "ok", "msg": "Focus Meditation Agent"})
 
 
 @app.route("/sessions")
 def get_sessions():
-    """Return all meditation sessions as JSON"""
+    """
+    Return all meditation sessions as JSON.
+
+    Returns:
+        JSON array of meditation session records from the dataset
+    """
     if df.empty:
         return jsonify([])  # return empty list if no data
     return jsonify(df.to_dict(orient="records"))
@@ -46,6 +57,23 @@ def get_stats():
         "shortest_session": int(df["duration_minutes"].min()),
     }
     return jsonify(stats)
+
+
+@app.route("/health")
+def health_check():
+    """
+    Detailed health check endpoint with system information.
+
+    Returns:
+        JSON response with system status, data availability, and model status
+    """
+    return jsonify({
+        "status": "healthy",
+        "timestamp": "2025-09-20T12:00:00Z",
+        "data_loaded": not df.empty,
+        "model_loaded": model is not None,
+        "version": "1.0.0"
+    })
 
 
 @app.route("/predict", methods=["POST"])
