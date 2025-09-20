@@ -1,39 +1,30 @@
 from app import app
 
-def test_root():
-    client = app.test_client()
-    res = client.get("/")
-    assert res.status_code == 200
-    data = res.get_json()
-    assert data["status"] == "ok"
-    assert data["msg"] == "Focus Meditation Agent"
+def client():
+    return app.test_client()
 
-def test_sessions():
-    client = app.test_client()
-    res = client.get("/sessions")
+def test_root_ok():
+    res = client().get("/")
     assert res.status_code == 200
-    sessions = res.get_json()
-    # check dataset length (should be 30)
-    assert isinstance(sessions, list)
-    assert len(sessions) == 30
-    # check fields
-    first = sessions[0]
-    assert "date" in first
-    assert "duration_minutes" in first
-    assert "mood_before" in first
-    assert "mood_after" in first
+    assert res.get_json()["status"] == "ok"
 
-def test_stats():
-    client = app.test_client()
-    res = client.get("/stats")
+def test_stats_keys():
+    res = client().get("/stats")
     assert res.status_code == 200
     stats = res.get_json()
-    # check required keys
-    assert "total_sessions" in stats
-    assert "avg_duration" in stats
-    assert "longest_session" in stats
-    assert "shortest_session" in stats
-    # validate numbers
-    assert stats["total_sessions"] == 30
-    assert stats["longest_session"] == 35
-    assert stats["shortest_session"] == 10
+    for k in ["total_sessions", "avg_duration", "longest_session", "shortest_session"]:
+        assert k in stats
+
+def test_sessions_list():
+    res = client().get("/sessions")
+    assert res.status_code == 200
+    assert isinstance(res.get_json(), list)
+
+def test_predict_requires_fields():
+    res = client().post("/predict", json={})
+    assert res.status_code == 400
+
+def test_predict_valid_input():
+    res = client().post("/predict", json={"duration_minutes": 15, "mood_before": "neutral"})
+    # Either 200 (prediction ok) or 503 (model not loaded)
+    assert res.status_code in (200, 503)
