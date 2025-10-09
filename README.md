@@ -44,6 +44,8 @@ This project demonstrates a complete MLOps CI/CD pipeline for a machine learning
 - **Machine Learning Model**: Scikit-learn pipeline for mood prediction
 - **Flask REST API**: 4 endpoints with comprehensive functionality
 - **Docker Containerization**: Multi-stage build with production optimization
+- **Docker Hub**: Image published and publicly accessible
+- **Kubernetes Deployment**: Production-ready K8s manifests with 3 replicas
 - **CI/CD Pipeline**: GitHub Actions + Jenkins integration
 - **Branch Strategy**: dev → test → master workflow
 - **Admin Approval**: Pull request reviews with CODEOWNERS
@@ -54,6 +56,7 @@ This project demonstrates a complete MLOps CI/CD pipeline for a machine learning
 - **Backend**: Python 3.11, Flask, Gunicorn
 - **ML Framework**: Scikit-learn, Pandas, Joblib
 - **Containerization**: Docker, Docker Hub
+- **Orchestration**: Kubernetes (Deployment + Service)
 - **CI/CD**: GitHub Actions, Jenkins
 - **Testing**: pytest, flake8
 - **Database**: CSV dataset (30+ meditation session records)
@@ -75,13 +78,25 @@ mlops-assignment/
 │   └── train.py                       # Model training script
 ├── 🧪 tests/
 │   └── test_app.py                    # Comprehensive unit tests
+├── ☸️ k8s/
+│   ├── deployment.yaml                # Kubernetes Deployment manifest
+│   ├── service.yaml                   # LoadBalancer Service manifest
+│   ├── service-nodeport.yaml          # NodePort Service manifest
+│   └── README.md                      # Kubernetes documentation
 ├── ⚙️ .github/
 │   ├── CODEOWNERS                     # Admin approval configuration
 │   └── workflows/
 │       ├── lint.yml                   # flake8 code quality checks
 │       └── test.yml                   # pytest automated testing
 ├── 📚 docs/                           # Documentation files
+│   └── TASK4_DOCKER_KUBERNETES.md     # Task 4 complete guide
 ├── 🚀 demo-script.ps1                 # Teacher demonstration script
+├── 🐳 docker-push.ps1                 # Docker Hub push automation
+├── ☸️ k8s-deploy.ps1                  # Kubernetes deployment automation
+├── 🧹 k8s-cleanup.ps1                 # Kubernetes cleanup script
+├── 📋 TASK4_QUICKREF.md               # Task 4 quick reference
+├── 📊 TASK4_WORKFLOW.md               # Task 4 workflow diagrams
+├── 📝 TASK4_SUMMARY.md                # Task 4 completion summary
 └── 📖 README.md                       # This comprehensive guide
 ```
 
@@ -257,6 +272,69 @@ DOCKERHUB_REPO=bilalrazaswe/focus-meditation-agent
 # Quick Docker test
 .\docker-push-test.ps1
 ```
+
+## ☸️ Kubernetes Deployment (Task 4)
+
+### Docker Hub Push
+Push the Docker image to Docker Hub registry:
+
+```powershell
+# Automated script (recommended)
+.\docker-push.ps1
+
+# Manual commands
+docker build -t bilalrazaswe/focus-meditation-agent:latest .
+docker login
+docker push bilalrazaswe/focus-meditation-agent:latest
+```
+
+**Docker Hub Repository**: [bilalrazaswe/focus-meditation-agent](https://hub.docker.com/r/bilalrazaswe/focus-meditation-agent)
+
+### Kubernetes Deployment
+Deploy the application to a Kubernetes cluster:
+
+```powershell
+# Automated deployment (recommended)
+.\k8s-deploy.ps1
+
+# Manual deployment
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service-nodeport.yaml  # For local
+# OR
+kubectl apply -f k8s/service.yaml           # For cloud
+
+# Check deployment status
+kubectl get pods -l app=focus-meditation-agent
+kubectl get service
+```
+
+### Kubernetes Resources
+- **Deployment**: 3 replicas with health checks
+- **Service**: NodePort (30080) or LoadBalancer
+- **Resource Limits**: CPU 250m-500m, Memory 256Mi-512Mi
+- **Health Checks**: Liveness and readiness probes
+- **Access**: http://localhost:30080/ (NodePort)
+
+### Kubernetes Management
+```powershell
+# View logs
+kubectl logs -l app=focus-meditation-agent
+
+# Scale replicas
+kubectl scale deployment focus-meditation-agent --replicas=5
+
+# Update deployment
+kubectl rollout restart deployment/focus-meditation-agent
+
+# Cleanup
+.\k8s-cleanup.ps1
+```
+
+### Task 4 Documentation
+- **Quick Reference**: See [TASK4_QUICKREF.md](TASK4_QUICKREF.md)
+- **Complete Guide**: See [docs/TASK4_DOCKER_KUBERNETES.md](docs/TASK4_DOCKER_KUBERNETES.md)
+- **Workflow Diagram**: See [TASK4_WORKFLOW.md](TASK4_WORKFLOW.md)
+- **K8s Details**: See [k8s/README.md](k8s/README.md)
 
 ## 🏆 Assignment Compliance
 
